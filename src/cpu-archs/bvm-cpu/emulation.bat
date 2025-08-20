@@ -186,6 +186,7 @@ if "!command!"=="SUB" (
     set /a !dest_name!=!dest_name! - !src!
 )
 
+
 if "!command!"=="MUL" (
     for /f "tokens=1" %%e in ("!operand1!") do (
         if not defined operand1 (
@@ -217,6 +218,58 @@ if "!command!"=="MUL" (
     )
 
     set /a !dest_name!=!dest_name! * !src!
+)
+
+if "!command!"=="VAR" (
+    for /f "tokens=1" %%e in ("!operand1!") do (
+        set "dest=!%%e!"
+        set "dest_name=!operand1!"
+    )
+
+    set "!dest_name!=0"
+)
+
+
+if "!command!"=="XOR" (
+    for /f "tokens=1" %%e in ("!operand1!") do (
+        if not defined operand1 (
+            echo Destination register is not defined.
+            exit /b 1
+        )
+
+        set "dest=!%%e!"
+        set "dest_name=!operand1!"
+
+        if not defined dest (
+            echo Destination register is not defined.
+            exit /b 1
+        )
+    )
+    for /f "tokens=1" %%e in ("!operand2!") do (
+        if not defined operand2 (
+            echo Source operand is not defined.
+            exit /b 1
+        )
+
+        if defined %%e (
+            set "src=!%%e!"
+            set "src_name=!operand2!"
+        ) else (
+            set "src=!operand2!"
+            set "src_name=!operand2!"
+        )
+    )
+
+    set /a !dest_name!=!dest_name!^!src!
+)
+
+if "!command!"=="VAR" (
+    for /f "tokens=1" %%e in ("!operand1!") do (
+        set "dest=!%%e!"
+        set "dest_name=!operand1!"
+    )
+
+    set "!dest_name!=0"
 )
 
 if "!command!"=="DIV" (
@@ -412,7 +465,7 @@ if "!command!"=="PRA" (
     )
 
     rem Set variables for each ascii character
-    set "ascii_32=`" & rem Workaround for space character not showing up if it's the only thing in ^<nul set /p
+    set "ascii_32= "
     set "ascii_33=^!"
     set "ascii_34="""
     set "ascii_35=#"
@@ -474,7 +527,7 @@ if "!command!"=="PRA" (
     set "ascii_91=["
     set "ascii_92=\"
     set "ascii_93=]"
-    set "ascii_94=^^"
+    set "ascii_94=^"
     set "ascii_95=_"
     set "ascii_96=`"
     set "ascii_97=a"
@@ -513,8 +566,10 @@ if "!command!"=="PRA" (
         set "ascii_char=!ascii_%%f!"
         if defined ascii_char (
             <nul set /p="!ascii_char!" & rem Print the character without a newline
+        ) else if "!ascii_char!"=="10" (
+            echo.
         ) else (
-            <nul set /p="?" & rem If the character is not defined, print a question mark
+            <nul set /p="<Unknown>" & rem If the character is not defined, print a question mark
         )
     )
 )

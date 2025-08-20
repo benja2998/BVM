@@ -1,0 +1,6 @@
+VAR myvar
+MOV myvar, 2
+PRN myvar
+VAR myvar2
+PRN myvar2
+HLT
