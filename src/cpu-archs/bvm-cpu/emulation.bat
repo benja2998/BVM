@@ -465,7 +465,7 @@ if "!command!"=="PRA" (
     )
 
     rem Set variables for each ascii character
-    set "ascii_32= "
+    set "ascii_32=` `"
     set "ascii_33=^!"
     set "ascii_34="""
     set "ascii_35=#"
